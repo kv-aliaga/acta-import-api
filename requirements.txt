@@ -8,3 +8,6 @@ python-slugify
 python-pptx
 pypdf
 python-multipart
+pymongo[srv]==4.8.0
+dnspython
+certifi
