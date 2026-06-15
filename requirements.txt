@@ -7,3 +7,4 @@ openpyxl
 python-slugify
 python-pptx
 pypdf
+python-multipart
