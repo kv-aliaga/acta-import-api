@@ -49,5 +49,8 @@ def inserir_documento(documento: Documento, dados) -> dict:
             'status': 201,
             'message': 'Documento persistido com sucesso'
         }
-    except:
-        raise HTTPException(status_code=500, detail='Erro no banco de dados')
+   except Exception as e:
+    import traceback
+    traceback.print_exc()
+
+    raise HTTPException(status_code=500, detail=str(e))
