@@ -29,6 +29,16 @@ async def obter_usuario_autenticado(credenciais: HTTPAuthorizationCredentials = 
         raise HTTPException(502, 'Falha ao consultar usuário autenticado')
 
     try:
-        return UsuarioAutenticado.model_validate(resposta.json())
+        dados_usuario = resposta.json()
+        if not isinstance(dados_usuario, dict):
+            raise ValueError
+    except (ValueError, TypeError):
+        raise HTTPException(502, 'Resposta inválida de acta-pg-api')
+
+    if dados_usuario.get('status') != 'ATIVO':
+        raise HTTPException(403, 'Usuário não autorizado')
+
+    try:
+        return UsuarioAutenticado.model_validate(dados_usuario)
     except (ValueError, TypeError):
         raise HTTPException(502, 'Resposta inválida de acta-pg-api')
