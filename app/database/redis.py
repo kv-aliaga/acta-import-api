@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from redis import Redis, ConnectionPool
+from redis import Redis, ConnectionPool, SSLConnection
 from redis.exceptions import RedisError
 from dotenv import load_dotenv
 from os import getenv
@@ -15,7 +15,10 @@ REDIS_SSL = bool(REDIS_HOST and REDIS_HOST.lower().endswith('.upstash.io'))
 
 @lru_cache # apenas um pool por sessão
 def get_pool() -> ConnectionPool:
-    return ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, ssl=REDIS_SSL, max_connections=20, retry_on_timeout=True)
+    pool_options = {'host': REDIS_HOST, 'port': REDIS_PORT, 'db': REDIS_DB, 'password': REDIS_PASSWORD, 'max_connections': 20, 'retry_on_timeout': True}
+    if REDIS_SSL:
+        pool_options['connection_class'] = SSLConnection
+    return ConnectionPool(**pool_options)
 
 def get_conn() -> Redis:
     try:
