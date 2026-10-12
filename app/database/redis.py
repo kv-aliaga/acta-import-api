@@ -11,10 +11,11 @@ REDIS_HOST = getenv('REDIS_HOST')
 REDIS_PORT = getenv('REDIS_PORT')
 REDIS_DB = getenv('REDIS_DB')
 REDIS_PASSWORD = getenv('REDIS_PASSWORD')
+REDIS_SSL = bool(REDIS_HOST and REDIS_HOST.lower().endswith('.upstash.io'))
 
 @lru_cache # apenas um pool por sessão
 def get_pool() -> ConnectionPool:
-    return ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, max_connections=20, retry_on_timeout=True)
+    return ConnectionPool(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, password=REDIS_PASSWORD, ssl=REDIS_SSL, max_connections=20, retry_on_timeout=True)
 
 def get_conn() -> Redis:
     try:
