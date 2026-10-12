@@ -5,7 +5,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.schemas import UsuarioAutenticado
 
-ACTA_PG_API_URL = getenv('ACTA_PG_API_URL')
+ACTA_PG_API_URL = (getenv('ACTA_PG_API_URL') or '').rstrip('/')
+if ACTA_PG_API_URL and not ACTA_PG_API_URL.endswith('/api/v1'):
+    ACTA_PG_API_URL = f'{ACTA_PG_API_URL}/api/v1'
 bearer = HTTPBearer()
 
 async def obter_usuario_autenticado(credenciais: HTTPAuthorizationCredentials = Security(bearer)) -> UsuarioAutenticado:
