@@ -82,8 +82,6 @@ CLOUDINARY_API_KEY=sua_api_key
 CLOUDINARY_API_SECRET=seu_api_secret
 
 ACTA_PG_API_URL=https://acta-pg-api.onrender.com/api/v1
-ACTA_IA_TOKEN=defina-um-token-interno
-
 REDIS_HOST=localhost
 REDIS_PORT=6379
 ```
@@ -173,12 +171,11 @@ Essa resposta não representa a confirmação final do Cloudinary. O status fina
 
 ```http
 POST /anexos/ia
-Authorization: Bearer <ACTA_IA_TOKEN>
-X-Acta-Usuario-Id: <ID_DO_USUARIO>
+Authorization: Bearer <TOKEN_FIREBASE_DO_USUARIO>
 Content-Type: multipart/form-data
 ```
 
-A IA usa uma credencial própria de serviço e informa apenas o usuário em nome de quem está realizando o upload. A API valida se esse usuário está ativo, obtém a empresa diretamente de `public.usuario_sistema` e verifica se o ciclo pertence à mesma empresa. O `id_empresa` e o `firebase_uid` não são recebidos nessa rota.
+A IA envia o Firebase Bearer token do usuário em nome de quem está realizando o upload. A API consulta `/me` na PG API para validar a identidade e obter a empresa, e verifica se o ciclo pertence à mesma empresa. O `id_empresa` e o `firebase_uid` não são recebidos nessa rota.
 
 Os campos do formulário e a resposta `202 Accepted` são os mesmos de `POST /anexos`.
 
@@ -195,8 +192,7 @@ Para a IA:
 
 ```http
 GET /anexos/ia/{id_anexo}
-Authorization: Bearer <ACTA_IA_TOKEN>
-X-Acta-Usuario-Id: <ID_DO_USUARIO>
+Authorization: Bearer <TOKEN_FIREBASE_DO_USUARIO>
 ```
 
 A resposta informa o status atual, se o envio terminou com sucesso e a URL gerada pelo Cloudinary:
